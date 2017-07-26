@@ -1,0 +1,22 @@
+{
+  "name": "boids",
+  "version": "0.0.1",
+  "description": "SVG vs. Canvas comparison with Boids algorithm",
+  "main": "main.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fercen/boids.git"
+  },
+  "author": "Janne Peltonen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fercen/boids/issues"
+  },
+  "homepage": "https://github.com/fercen/boids#readme",
+  "devDependencies": {
+    "webpack": "^3.4.1"
+  }
+}
