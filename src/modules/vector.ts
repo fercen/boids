@@ -8,6 +8,11 @@ class Vector {
         this.y = y;
     }
 
+    zero(): void {
+        this.x = 0;
+        this.y = 0;
+    }
+
     magnitude(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y );
     }
@@ -21,12 +26,17 @@ class Vector {
         return new Vector(-this.x, -this.y);
     }
 
-    add(to: Vector): Vector {
-        return new Vector(this.x + to.x, this.y + to.y);
+    add(...to: Vector[]): Vector {
+        let resultant = new Vector(this.x, this.y);
+        for(let vector of to){
+            resultant.x += vector.x;
+            resultant.y += vector.y;
+        }
+        return resultant;
     }
 
-    sub(to: Vector): Vector {
-        return this.add(to.neg());
+    sub(from: Vector): Vector {
+        return this.add(from.neg());
     }
 
     angle(): number {
@@ -38,7 +48,7 @@ class Vector {
     }
 
     distance(other: Vector): number {
-        let resultant = other.add(this);
+        let resultant = other.sub(this);
         return resultant.magnitude();
     }
 }

@@ -57,7 +57,7 @@ function animateSVG(){
 
 Boid.vision = 30;
 Boid.speed = 0.2;
-
+Boid.clearance = 20;
 let animation = setInterval(animateSVG, 10);
 
 function stop() {
