@@ -1,3 +1,5 @@
+const svgNS = "http://www.w3.org/2000/svg";
+const xlinkNS = "http://www.w3.org/1999/xlink";
 
 const config = {
     width: 400,
@@ -5,13 +7,10 @@ const config = {
     count: 100
 };
 
+const $vg = document.createElementNS(svgNS, "svg");
+
 function drawSVG (flock: Flock) {
 
-
-    const svgNS = "http://www.w3.org/2000/svg";
-    const xlinkNS = "http://www.w3.org/1999/xlink";
-
-    let $vg = document.createElementNS(svgNS, "svg");
     $vg.setAttribute( "viewBox"
         , "0 0 " + String(config.width) + " " + String(config.height));
     $vg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -55,8 +54,8 @@ function animateSVG(){
     }
 }
 
-Boid.vision = 30;
-Boid.speed = 0.2;
+Boid.vision = 50;
+Boid.speed = 0.3;
 Boid.clearance = 20;
 Boid.angularVelocity = .1;
 let animation = setInterval(animateSVG, 10);
