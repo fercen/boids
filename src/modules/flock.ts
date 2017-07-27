@@ -1,7 +1,5 @@
-import {Boid} from './boid';
-import {Vector} from './vector'
+class Flock {
 
-export class Flock {
     boids: Boid[];
     width: number;
     height: number;

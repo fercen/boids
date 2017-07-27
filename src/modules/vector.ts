@@ -1,4 +1,4 @@
-export class Vector {
+class Vector {
 
     x: number;
     y: number;
