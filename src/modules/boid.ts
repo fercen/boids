@@ -7,6 +7,7 @@ class Boid {
     static vision: number;
     static speed: number;
     static clearance: number;
+    static angularVelocity: number;
 
     constructor(location = new Vector(), velocity = new Vector(1, 0)){
         this.location = location;
@@ -58,8 +59,17 @@ class Boid {
 
         let next = this.clone();
         next.location = next.location.add(delta.scale(Boid.speed));
-        next.orientation = delta.angle();
 
+
+        let diff: number = delta.angle() - this.orientation;
+        diff *= .1;
+
+        let clamp = Boid.angularVelocity * 180 / Math.PI;
+        if(Math.abs(diff) > clamp){
+            diff = diff > 0 ? clamp : -clamp;
+        }
+
+        next.orientation = this.orientation + diff;
         next.location.x = (next.location.x + flock.width) % flock.width;
         next.location.y = (next.location.y + flock.height) % flock.height;
 
