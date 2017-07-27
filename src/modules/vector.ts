@@ -33,4 +33,12 @@ class Vector {
         return Math.atan2(this.y, this.x);
     }
 
+    scale(factor: number): Vector {
+        return new Vector(this.x * factor, this.y * factor);
+    }
+
+    distance(other: Vector): number {
+        let resultant = other.add(this);
+        return resultant.magnitude();
+    }
 }

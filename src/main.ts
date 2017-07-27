@@ -2,7 +2,7 @@
 const config = {
     width: 400,
     height: 400,
-    count: 10
+    count: 100
 };
 
 function drawSVG (flock: Flock) {
@@ -12,7 +12,8 @@ function drawSVG (flock: Flock) {
     const xlinkNS = "http://www.w3.org/1999/xlink";
 
     let $vg = document.createElementNS(svgNS, "svg");
-    $vg.setAttribute( "viewBox", "0 0 400 400");
+    $vg.setAttribute( "viewBox"
+        , "0 0 " + String(config.width) + " " + String(config.height));
     $vg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
     let $defs = document.createElementNS(svgNS, "defs");
@@ -31,7 +32,8 @@ function drawSVG (flock: Flock) {
     for(let boid of flock.boids){
         let $boid = document.createElementNS(svgNS, "g");
         let $use = document.createElementNS(svgNS, "use");
-        $boid.setAttribute( "transform", "translate(" + String(boid.location.x) + " " + String(boid.location.y) + ")" );
+        $boid.setAttribute( "transform", `translate(${String(boid.location.x)} ${String(boid.location.y)})` );
+        $use.setAttribute("transform", `rotate(${boid.orientation * 180 / Math.PI})`);
         $boid.appendChild($use);
         $vg.appendChild($boid);
         $use.setAttributeNS(xlinkNS, "href", "#boid");
@@ -43,5 +45,21 @@ let flock = new Flock(config.width, config.height, config.count);
 
 drawSVG(flock);
 
+function animateSVG(){
+    flock.step();
+    for(let boid of flock.boids){
+        boid.element.setAttribute( "transform"
+            , `translate(${String(boid.location.x)} ${String(boid.location.y)})` );
+        let $use = boid.element.firstElementChild;
+        $use.setAttribute( "transform", "rotate(" + (boid.orientation * 180 / Math.PI) + ")")
+    }
+}
 
+Boid.vision = 30;
+Boid.speed = 0.2;
 
+let animation = setInterval(animateSVG, 10);
+
+function stop() {
+    clearInterval(animation);
+}
