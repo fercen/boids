@@ -8,35 +8,24 @@ const config = {
 function drawSVG (flock: Flock) {
 
 
-    const svgNS = "http://www.w3.org/2000/svg/";
-    const xmlNS = "http://www.w3.org/2000/xmlns/";
-    const xlinkNS = "http://www.w3.org/1999/xlink/";
-
+    const svgNS = "http://www.w3.org/2000/svg";
+    const xlinkNS = "http://www.w3.org/1999/xlink";
 
     let $vg = document.createElementNS(svgNS, "svg");
-    $vg.setAttributeNS(xmlNS, "xmlns:xlink", "http://www.w3.org/1999/xlink");
-    $vg.setAttributeNS(xmlNS, "xmlns", "http://www.w3.org/2000/svg");
-    $vg.setAttributeNS(svgNS, "viewBox", "0 0 400 400");
-    $vg.setAttribute("width", "100%");
-    $vg.setAttribute("height", "100%");
-
-    let $rekt = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    $rekt.setAttributeNS(svgNS, "width", "100");
-    $rekt.setAttributeNS(svgNS, "height", "70");
-    $rekt.setAttributeNS(svgNS, "fill", "black");
-    $vg.appendChild($rekt);
-
+    $vg.setAttribute( "viewBox", "0 0 400 400");
+    $vg.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
 
     let $defs = document.createElementNS(svgNS, "defs");
     let $boid = document.createElementNS(svgNS, "g");
     let $ymbol = document.createElementNS(svgNS, "polyline");
 
-    $boid.setAttributeNS(svgNS, "id", "boid");
-    $ymbol.setAttributeNS(svgNS, "points", "0,-5 10,0 0, 5");
+    $boid.setAttribute( "id", "boid");
+    $ymbol.setAttribute( "points", "0,-5 10,0 0, 5");
 
     $boid.appendChild($ymbol);
     $defs.appendChild($boid);
     $vg.appendChild($defs);
+
     document.body.appendChild($vg);
 
     for(let boid of flock.boids){
