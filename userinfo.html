@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+            font-family: Arial;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                    Window outer width
+                </td>
+                <td id="outerwidth">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Window outer height
+                </td>
+                <td id="outerheight">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Pixel ratio
+                </td>
+                <td id="pixelratio">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Window inner width
+                </td>
+                <td id="innerwidth">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Window inner height
+                </td>
+                <td id="innerheight">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Screen width
+                </td>
+                <td id="screenwidth">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Screen height
+                </td>
+                <td id="screenheight">
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Screen resolution
+                </td>
+                <td id="screenresolution">
+
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+</body>
+<script type="text/javascript">
+    var screen = window.screen;
+    var refresh = function(){
+        document.querySelector("#outerheight").innerHTML = window.outerHeight;
+        document.querySelector("#outerwidth").innerHTML = window.outerWidth;
+        document.querySelector("#innerheight").innerHTML = window.innerHeight;
+        document.querySelector("#innerwidth").innerHTML = window.innerWidth;
+        document.querySelector("#pixelratio").innerHTML = window.devicePixelRatio;
+        document.querySelector("#screenwidth").innerHTML = screen.width;
+        document.querySelector("#screenheight").innerHTML = screen.height;
+    };
+    setInterval(refresh, 1000);
+
+</script>
+</html>

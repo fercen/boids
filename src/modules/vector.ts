@@ -19,7 +19,11 @@ class Vector {
 
     unit(): Vector{
         let length = this.magnitude();
-        return new Vector(this.x / length, this.y / length);
+        if(length > 0){
+            return new Vector(this.x / length, this.y / length);
+        }else{
+            return new Vector();
+        }
     }
 
     neg(): Vector {

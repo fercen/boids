@@ -28,21 +28,33 @@ class Flock {
 
     getNeighbors(location: Vector, limit: number):Boid[] {
         let result: Boid[] = [];
-        let center = new Vector(this.width / 2, this.height / 2);
-        let offset = location.sub(center);
+
+        const center = new Vector(this.width / 2, this.height / 2);
+        const offset = location.sub(center);
+
+
         for(let boid of this.boids){
-            let absoluteOffset = boid.location.sub(location);
-            let clamped = offset.sub(boid.location);
-            clamped.x = (clamped.x + flock.width / 2) % flock.width / 2 ;
-            clamped.y = (clamped.y + flock.height / 2) % flock.height / 2 ;
-            let clampedOffset = center.sub(clamped);
-            let distance = center.distance(clamped);
+
+            let clamped = boid.location.sub(offset);
+
+            clamped.x = (clamped.x + flock.width) % flock.width;
+            clamped.y = (clamped.y + flock.height) % flock.height;
+
+            let diff = clamped.sub(center);
+
+            let distance = diff.magnitude();
+
             if(distance < limit && distance > 0){
                 let clone = boid.clone();
-                clone.location = center.sub(clamped);
+                clone.location = diff;
                 result.push(clone);
+                Debug.hilight(location.add(diff), 10, "green");
             }
+
+
         }
+
+
         return result;
     }
 }

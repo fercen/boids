@@ -4,10 +4,15 @@ class Boid {
     orientation: number;
     element: SVGGElement;
 
-    static vision: number;
-    static speed: number;
-    static clearance: number;
-    static angularVelocity: number;
+    static vision = 30;
+    static speed = 1;
+    static clearance = 10;
+    static angularVelocity = 0.1;
+
+    static cohesionFactor = 2;
+    static separationFactor = 10;
+    static alignmentFactor = 5;
+    static inertia = 10;
 
     constructor(location = new Vector(), velocity = new Vector(1, 0)){
         this.location = location;
@@ -17,51 +22,45 @@ class Boid {
 
     static separation(neighbors: Boid[]): Vector{
         let result = new Vector();
-        for(let boid of neighbors){
-
-
-
-
-            let component = new Vector().add(boid.location);
-            let magnitude = component.magnitude();
-            if(magnitude > Boid.clearance){
-                component.zero();
-            }else{
-                component = component.unit().scale(Boid.clearance - magnitude);
+        for(let neighbor of neighbors){
+            let magnitude = neighbor.location.magnitude();
+            if(magnitude < Boid.clearance){
+                let factor = (Boid.clearance - magnitude) / magnitude;
+                let component = neighbor.location;
+                component = component.unit();
+                component = component.scale(factor * Boid.clearance);
+                component = component.neg();
+                //result = result.add(neighbor.location.unit().scale(factor).neg());
+                result = result.add(component);
             }
-            result = result.add(component);
         }
-        return result;
+        return result.unit();
     }
     static cohesion(neighbors: Boid[]): Vector{
         let center = new Vector();
         for(let boid of neighbors){
             center = center.add(boid.location);
         }
-        return center.scale(1 / neighbors.length);
+        return center.unit();
     }
     static alignment(neighbors: Boid[]): Vector{
-        return new Vector();
+        let result = new Vector();
+        for(let neighbor of neighbors){
+            result = result.add(neighbor.velocity.unit());
+        }
+        return result.unit();
     }
 
     step(flock: Flock): Boid{
-        let delta = this.velocity;
+        Debug.hilight(this.location, Boid.clearance, "red");
+        Debug.hilight(this.location, Boid.vision, "silver");
+
+        let delta = this.velocity.unit().scale(Boid.inertia);
         let neighbors = flock.getNeighbors(this.location, Boid.vision);
 
-        let circler = document.createElementNS(svgNS, "circle");
-        circler.setAttribute("r", "15");
-        circler.setAttribute("cx", String(this.location.x));
-        circler.setAttribute("cy", String(this.location.y));
-        $vg.appendChild(circler);
 
-        let markers: SVGCircleElement[] = [];
         for(let neighbor of neighbors){
-            let circle = document.createElementNS(svgNS, "circle");
-            circle.setAttribute("r", "10");
-            circle.setAttribute("cx", String(neighbor.location.x + this.location.x));
-            circle.setAttribute("cy", String(neighbor.location.y + this.location.y));
-            markers.push(circle);
-            $vg.appendChild(circle);
+            //Debug.hilight(neighbor.location, 10);
         }
 
 
@@ -71,10 +70,14 @@ class Boid {
 
         // No point in applying the rules if the boid is alone
         if(neighbors.length > 0){
-            separation = Boid.separation(neighbors);
-            alignment = Boid.alignment(neighbors);
-            cohesion = Boid.cohesion(neighbors);
+            separation = Boid.separation(neighbors).scale(Boid.separationFactor);
+            alignment = Boid.alignment(neighbors).scale(Boid.alignmentFactor);
+            cohesion = Boid.cohesion(neighbors).scale(Boid.cohesionFactor);
         }
+
+        Debug.line(this.location, this.location.add(separation), "red");
+        Debug.line(this.location, this.location.add(cohesion), "green");
+        Debug.line(this.location, this.location.add(alignment), "blue");
 
         delta = delta.add(separation, alignment, cohesion).unit();
 
@@ -94,10 +97,7 @@ class Boid {
         next.location.x = (next.location.x + flock.width) % flock.width;
         next.location.y = (next.location.y + flock.height) % flock.height;
 
-        circler.remove();
-        for(let circle of markers){
-            circle.remove();
-        }
+        Debug.clear();
         return next;
     }
 

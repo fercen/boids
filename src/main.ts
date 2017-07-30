@@ -4,7 +4,8 @@ const xlinkNS = "http://www.w3.org/1999/xlink";
 const config = {
     width: 400,
     height: 400,
-    count: 100
+    count: 100,
+    framerate: 25
 };
 
 const $vg = document.createElementNS(svgNS, "svg");
@@ -20,7 +21,7 @@ function drawSVG (flock: Flock) {
     let $ymbol = document.createElementNS(svgNS, "polyline");
 
     $boid.setAttribute( "id", "boid");
-    $ymbol.setAttribute( "points", "0,-5 10,0 0, 5");
+    $ymbol.setAttribute( "points", "-5,-5 5,0 -5, 5");
 
     $boid.appendChild($ymbol);
     $defs.appendChild($boid);
@@ -54,11 +55,8 @@ function animateSVG(){
     }
 }
 
-Boid.vision = 50;
-Boid.speed = 0.3;
-Boid.clearance = 20;
-Boid.angularVelocity = .1;
-let animation = setInterval(animateSVG, 10);
+
+let animation = setInterval(animateSVG, 1000 / config.framerate);
 
 function stop() {
     clearInterval(animation);
