@@ -4,16 +4,16 @@ class Boid {
     orientation: number;
     element: SVGGElement;
 
-    static vision = 20;
+    static vision = 30;
     static speed = 1;
-    static clearance = 10;
+    static clearance = 15;
     static angularVelocity = 0.1;
 
     static cohesionFactor = 2;
-    static separationFactor = 10;
+    static separationFactor = 20;
     static alignmentFactor = 5;
     static inertia = 10;
-    static drag = 0.9;
+    static drag = 0.95;
 
     constructor(location = new Vector(), velocity = new Vector(1, 0)){
         this.location = location;
@@ -31,7 +31,6 @@ class Boid {
                 component = component.unit();
                 component = component.scale(factor * Boid.clearance);
                 component = component.neg();
-                //result = result.add(neighbor.location.unit().scale(factor).neg());
                 result = result.add(component);
             }
         }
@@ -53,8 +52,6 @@ class Boid {
     }
 
     step(flock: Flock): Boid{
-        Debug.hilight(this.location, Boid.clearance, "red");
-        Debug.hilight(this.location, Boid.vision, "silver");
 
         let delta = this.velocity.unit().scale(Boid.inertia);
         let neighbors = flock.getNeighbors(this.location, Boid.vision);
@@ -71,16 +68,12 @@ class Boid {
             cohesion = Boid.cohesion(neighbors).scale(Boid.cohesionFactor);
         }
 
-        Debug.line(this.location, this.location.add(separation), "red");
-        Debug.line(this.location, this.location.add(cohesion), "green");
-        Debug.line(this.location, this.location.add(alignment), "blue");
 
         delta = delta.add(separation, alignment, cohesion).unit().scale(Boid.speed);
 
-        Debug.line(this.location, this.location.add(delta.scale(40)), "teal");
-
-
-
+        if(delta.sub(this.velocity).magnitude() < 0.2){
+            delta = this.velocity;
+        }
 
         let next = this.clone();
         next.location = next.location.add(delta);
@@ -89,7 +82,7 @@ class Boid {
         next.location.x = (next.location.x + flock.width) % flock.width;
         next.location.y = (next.location.y + flock.height) % flock.height;
         next.velocity = delta.scale(1 - Boid.drag).add(this.velocity.scale(Boid.drag));
-        Debug.clear();
+
         return next;
     }
 

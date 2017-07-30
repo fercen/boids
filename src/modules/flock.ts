@@ -50,8 +50,7 @@ class Flock {
                 let clone = boid.clone();
                 clone.location = diff;
                 result.push(clone);
-                Debug.hilight(location.add(diff), 10, "green");
-            }
+                }
 
 
         }

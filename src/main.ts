@@ -2,8 +2,8 @@ const svgNS = "http://www.w3.org/2000/svg";
 const xlinkNS = "http://www.w3.org/1999/xlink";
 
 const config = {
-    width: 400,
-    height: 400,
+    width: 800,
+    height: 600,
     count: 100,
     framerate: 30
 };
