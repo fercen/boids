@@ -24,6 +24,8 @@ class Flock {
             nextState.push(boid.step(this));
         }
         this.boids = nextState;
+
+
     }
 
     getNeighbors(location: Vector, limit: number):Boid[] {

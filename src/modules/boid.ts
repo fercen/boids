@@ -4,7 +4,7 @@ class Boid {
     orientation: number;
     element: SVGGElement;
 
-    static vision = 30;
+    static vision = 20;
     static speed = 1;
     static clearance = 10;
     static angularVelocity = 0.1;
@@ -13,6 +13,7 @@ class Boid {
     static separationFactor = 10;
     static alignmentFactor = 5;
     static inertia = 10;
+    static drag = 0.9;
 
     constructor(location = new Vector(), velocity = new Vector(1, 0)){
         this.location = location;
@@ -59,11 +60,6 @@ class Boid {
         let neighbors = flock.getNeighbors(this.location, Boid.vision);
 
 
-        for(let neighbor of neighbors){
-            //Debug.hilight(neighbor.location, 10);
-        }
-
-
         let separation = new Vector();
         let alignment = new Vector();
         let cohesion = new Vector();
@@ -79,24 +75,20 @@ class Boid {
         Debug.line(this.location, this.location.add(cohesion), "green");
         Debug.line(this.location, this.location.add(alignment), "blue");
 
-        delta = delta.add(separation, alignment, cohesion).unit();
+        delta = delta.add(separation, alignment, cohesion).unit().scale(Boid.speed);
+
+        Debug.line(this.location, this.location.add(delta.scale(40)), "teal");
+
+
+
 
         let next = this.clone();
-        next.location = next.location.add(delta.scale(Boid.speed));
+        next.location = next.location.add(delta);
 
-
-        let diff: number = delta.angle() - this.orientation;
-        diff *= .1;
-
-        let clamp = Boid.angularVelocity * 180 / Math.PI;
-        if(Math.abs(diff) > clamp){
-            diff = diff > 0 ? clamp : -clamp;
-        }
-
-        next.orientation = this.orientation + diff;
+        next.orientation = delta.scale(0.01).add(this.velocity).angle();
         next.location.x = (next.location.x + flock.width) % flock.width;
         next.location.y = (next.location.y + flock.height) % flock.height;
-
+        next.velocity = delta.scale(1 - Boid.drag).add(this.velocity.scale(Boid.drag));
         Debug.clear();
         return next;
     }

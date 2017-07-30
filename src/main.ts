@@ -5,7 +5,7 @@ const config = {
     width: 400,
     height: 400,
     count: 100,
-    framerate: 25
+    framerate: 30
 };
 
 const $vg = document.createElementNS(svgNS, "svg");
@@ -53,6 +53,7 @@ function animateSVG(){
         let $use = boid.element.firstElementChild;
         $use.setAttribute( "transform", "rotate(" + (boid.orientation * 180 / Math.PI) + ")")
     }
+
 }
 
 
