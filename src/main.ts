@@ -2,10 +2,10 @@ const svgNS = "http://www.w3.org/2000/svg";
 const xlinkNS = "http://www.w3.org/1999/xlink";
 
 const config = {
-    width: 800,
-    height: 600,
-    count: 100,
-    framerate: 30
+    width: 1200,
+    height: 800,
+    count: 300,
+    framerate: 40
 };
 
 const $vg = document.createElementNS(svgNS, "svg");
@@ -46,6 +46,7 @@ let flock = new Flock(config.width, config.height, config.count);
 drawSVG(flock);
 
 function animateSVG(){
+    // Step the flock and then reposition and reorient each boid element
     flock.step();
     for(let boid of flock.boids){
         boid.element.setAttribute( "transform"
@@ -55,7 +56,6 @@ function animateSVG(){
     }
 
 }
-
 
 let animation = setInterval(animateSVG, 1000 / config.framerate);
 
