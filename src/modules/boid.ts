@@ -1,19 +1,19 @@
 class Boid {
     location: Vector;
     velocity: Vector;
-    orientation: number;
-    element: SVGGElement;
+    orientation: number;  // The current angle of this boid
+    element: SVGGElement; // Reference to the SVG element that represents this boid
 
-    static vision = 30;
-    static speed = 1;
-    static clearance = 15;
-    static angularVelocity = 0.1;
+    static vision = 30;             // The maximum distance to a boid that can affect this boids behavior
+    static speed = 1;               // Multiplier of the velocity vector when calculating step
+    static clearance = 15;          // The range of the avoidance rule
+    static angularVelocity = 0.1;   // Limits the orientation change speed
 
-    static cohesionFactor = 2;
-    static separationFactor = 20;
-    static alignmentFactor = 5;
-    static inertia = 10;
-    static drag = 0.95;
+    static cohesionFactor = 2;      // v
+    static separationFactor = 10;   // Multiplier to the rule result vectors
+    static alignmentFactor = 5;     // ^
+    static inertia = 10;            // Multiplier of the current velocity
+    static drag = 0.8;              // Change factor between the next and current velocity of a boid
 
     constructor(location = new Vector(), velocity = new Vector(1, 0)){
         this.location = location;
@@ -21,21 +21,39 @@ class Boid {
         this.orientation = velocity.angle();
     }
 
+    /**
+     *  The rules of boid flock behavior
+     */
+
+    /**
+     * A boid will avoid colliding with other boids
+     * @param {Boid[]} neighbors An array of boids within the boid field of vision
+     * @returns {Vector} The effect of this rule
+     */
     static separation(neighbors: Boid[]): Vector{
+
         let result = new Vector();
+
         for(let neighbor of neighbors){
             let magnitude = neighbor.location.magnitude();
+
             if(magnitude < Boid.clearance){
+                // The closer the neighbor, the stronger the avoidance
                 let factor = (Boid.clearance - magnitude) / magnitude;
                 let component = neighbor.location;
-                component = component.unit();
-                component = component.scale(factor * Boid.clearance);
-                component = component.neg();
+                component = component.unit().scale(factor * Boid.clearance).neg();
                 result = result.add(component);
             }
         }
+
         return result.unit();
     }
+
+    /**
+     * A boid will steer towards the center of mass of the neighboring boids
+     * @param {Boid[]} neighbors An array of boids within the boid field of vision
+     * @returns {Vector} The effect of this rule
+     */
     static cohesion(neighbors: Boid[]): Vector{
         let center = new Vector();
         for(let boid of neighbors){
@@ -43,6 +61,12 @@ class Boid {
         }
         return center.unit();
     }
+
+    /**
+     * A boid will assume the average orientation of the neighboring boids
+     * @param {Boid[]} neighbors An array of boids within the boid field of vision
+     * @returns {Vector} The effect of this rule
+     */
     static alignment(neighbors: Boid[]): Vector{
         let result = new Vector();
         for(let neighbor of neighbors){
@@ -51,11 +75,16 @@ class Boid {
         return result.unit();
     }
 
+
+    /**
+     * Calculate the next position of this boid based on the rules
+     * @param {Flock} flock The flock whose member the boid is
+     * @returns {Boid} A clone of the boid with the calculated next position, orientation and velocity
+     */
     step(flock: Flock): Boid{
 
-        let delta = this.velocity.unit().scale(Boid.inertia);
+        let delta = this.velocity.unit().scale(Boid.inertia); // The sum of rule vectors
         let neighbors = flock.getNeighbors(this.location, Boid.vision);
-
 
         let separation = new Vector();
         let alignment = new Vector();
@@ -71,16 +100,19 @@ class Boid {
 
         delta = delta.add(separation, alignment, cohesion).unit().scale(Boid.speed);
 
-        if(delta.sub(this.velocity).magnitude() < 0.2){
-            delta = this.velocity;
-        }
-
+        // Work on a clone so that other boids don't react to the next state
         let next = this.clone();
+
         next.location = next.location.add(delta);
 
-        next.orientation = delta.scale(0.01).add(this.velocity).angle();
+        // Smooth orientation change
+        next.orientation = delta.scale(Boid.angularVelocity).add(Vector.fromAngle(this.orientation)).angle();
+
+        // Wrapping with JS modulo operator
         next.location.x = (next.location.x + flock.width) % flock.width;
         next.location.y = (next.location.y + flock.height) % flock.height;
+
+        // Apply drag
         next.velocity = delta.scale(1 - Boid.drag).add(this.velocity.scale(Boid.drag));
 
         return next;

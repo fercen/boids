@@ -55,4 +55,8 @@ class Vector {
         let resultant = other.sub(this);
         return resultant.magnitude();
     }
+
+    static fromAngle(theta: number): Vector{
+        return new Vector(Math.cos(theta), Math.sin(theta));
+    }
 }
