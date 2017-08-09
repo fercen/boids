@@ -1,3 +1,7 @@
+/**
+ * Boid algorithm TypeScript implementation by Janne Peltonen, 2017
+ */
+
 class Boid {
     location: Vector;
     velocity: Vector;
@@ -46,7 +50,7 @@ class Boid {
             }
         }
 
-        return result.unit();
+        return result.unit(true);
     }
 
     /**
@@ -59,7 +63,7 @@ class Boid {
         for(let boid of neighbors){
             center = center.add(boid.location);
         }
-        return center.unit();
+        return center.unit(true);
     }
 
     /**
@@ -72,7 +76,7 @@ class Boid {
         for(let neighbor of neighbors){
             result = result.add(neighbor.velocity.unit());
         }
-        return result.unit();
+        return result.unit(true);
     }
 
 
@@ -98,7 +102,7 @@ class Boid {
         }
 
 
-        delta = delta.add(separation, alignment, cohesion).unit().scale(Boid.speed);
+        delta = delta.add(separation, alignment, cohesion).unit(true).scale(Boid.speed);
 
         // Work on a clone so that other boids don't react to the next state
         let next = this.clone();

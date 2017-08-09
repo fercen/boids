@@ -1,3 +1,8 @@
+/**
+ * Boid algorithm TypeScript implementation by Janne Peltonen, 2017
+ */
+
+
 class Flock {
 
     boids: Boid[];

@@ -1,3 +1,8 @@
+/**
+ * A 2D vector class by Janne Peltonen, 2017
+ */
+
+
 class Vector {
 
     x: number;
@@ -17,9 +22,17 @@ class Vector {
         return Math.sqrt(this.x * this.x + this.y * this.y );
     }
 
-    unit(): Vector{
+    /**
+     * Returns a unit vector with the same direction
+     * @param {boolean} clamp If true, does not increase the magnitude even if lower than 1
+     * @returns {Vector}
+     */
+    unit(clamp: boolean = false): Vector{
         let length = this.magnitude();
         if(length > 0){
+            if(length <= 1 && clamp){
+                return this;
+            }
             return new Vector(this.x / length, this.y / length);
         }else{
             return new Vector();
