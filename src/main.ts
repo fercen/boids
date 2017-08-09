@@ -3,7 +3,7 @@ const xlinkNS = "http://www.w3.org/1999/xlink";
 
 const config = {
     width: 1200,
-    height: 800,
+    height: 720,
     count: 300,
     framerate: 40
 };
