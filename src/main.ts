@@ -9,7 +9,7 @@ let flock = new Flock(config.width, config.height, config.count);
 
 const boidPoints = [new Vector(-5, -5), new Vector(5,0), new Vector(-5, 5)];
 
-let renderer = new SvgRenderer(flock, boidPoints);
+let renderer = getRenderer(SvgRenderer, flock, boidPoints);
 
 function animate() {
     flock.step();
