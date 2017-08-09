@@ -69,6 +69,12 @@ class Vector {
         return resultant.magnitude();
     }
 
+    rotate(theta: number): Vector {
+        let newX: number = this.x * Math.cos(theta) - this.y * Math.sin(theta);
+        let newY: number = this.x * Math.sin(theta) + this.y * Math.cos(theta);
+        return new Vector(newX, newY);
+    }
+
     static fromAngle(theta: number): Vector{
         return new Vector(Math.cos(theta), Math.sin(theta));
     }
