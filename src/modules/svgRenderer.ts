@@ -26,6 +26,22 @@ class SvgRenderer implements IRenderer {
         $defs.appendChild($boid);
         this.ctx.appendChild($defs);
 
+        let $rendererText = document.createElementNS(SvgRenderer.svgNS, "text");
+        $rendererText.textContent = "<svg>";
+        $rendererText.setAttribute("x", "5");
+        $rendererText.setAttribute("y", "15");
+        $rendererText.setAttribute("fill", "green");
+        
+        let $helpText = document.createElementNS(SvgRenderer.svgNS, "text");
+        $helpText.textContent = "press tab to toggle";
+        $helpText.setAttribute("x", "5");
+        $helpText.setAttribute("y", "30");
+        $helpText.setAttribute("fill", "grey");
+
+
+        this.ctx.appendChild($rendererText);
+        this.ctx.appendChild($helpText);
+
         document.body.appendChild(this.ctx);
 
         for(let boid of flock.boids){
@@ -47,5 +63,9 @@ class SvgRenderer implements IRenderer {
             let $use = boid.element.firstElementChild;
             $use.setAttribute( "transform", "rotate(" + (boid.orientation * 180 / Math.PI) + ")")
         }
+    }
+
+    clear() {
+        this.ctx.remove();
     }
 }

@@ -1,23 +1,24 @@
 class CanvasRenderer implements IRenderer {
 
+    readonly $canvas: HTMLCanvasElement;
     readonly symbol: Vector[];
     readonly ctx: CanvasRenderingContext2D;
     readonly width: number;
     readonly height: number;
 
     constructor(flock: Flock, symbol: Vector[]) {
-        const $canvas = document.createElement("canvas");
+        this.$canvas = document.createElement("canvas");
         this.width = flock.width;
         this.height = flock.height;
-        $canvas.id = "canvas";
-        $canvas.width = flock.width;
-        $canvas.height = flock.height;
-        this.ctx = $canvas.getContext('2d');
+        this.$canvas.id = "canvas";
+        this.$canvas.width = flock.width;
+        this.$canvas.height = flock.height;
+        this.ctx = this.$canvas.getContext('2d');
         this.symbol = symbol;
-        document.body.appendChild($canvas);
+        document.body.appendChild(this.$canvas);
     }
 
-    drawBoid(boid: Boid): void {
+    private drawBoid(boid: Boid): void {
 
         let absolutePoints: Vector[] = [];
 
@@ -40,5 +41,12 @@ class CanvasRenderer implements IRenderer {
         for(let boid of flock.boids) {
             this.drawBoid(boid);
         }
+        this.ctx.fillStyle = "green";
+        this.ctx.fillText("<canvas>", 5, 15);
+        this.ctx.fillStyle = "grey";
+        this.ctx.fillText("press tab to toggle", 5, 25);
+    }
+    clear() {
+        this.$canvas.remove();
     }
 }
