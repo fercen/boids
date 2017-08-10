@@ -3,7 +3,7 @@
  */
 
 
-class Vector {
+export class Vector {
 
     x: number;
     y: number;

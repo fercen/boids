@@ -1,9 +1,10 @@
 /**
  * Boid algorithm TypeScript implementation by Janne Peltonen, 2017
  */
+import {Boid} from "./boid";
+import {Vector} from "./vector";
 
-
-class Flock {
+export class Flock {
 
     boids: Boid[];
     width: number;
@@ -60,8 +61,8 @@ class Flock {
             let clamped = boid.location.sub(offset);
 
             // Wrap the candidate if it was offset beyond flock borders
-            clamped.x = (clamped.x + flock.width) % flock.width;
-            clamped.y = (clamped.y + flock.height) % flock.height;
+            clamped.x = (clamped.x + this.width) % this.width;
+            clamped.y = (clamped.y + this.height) % this.height;
 
             // Calculate the position relative to the location parameter
             let diff = clamped.sub(center);

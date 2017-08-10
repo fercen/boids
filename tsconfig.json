@@ -4,7 +4,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "jsx": "react",
-    "module": "none"
+    "module": "CommonJS"
   },
   "include": [
     "./src/"

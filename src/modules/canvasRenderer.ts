@@ -1,4 +1,9 @@
-class CanvasRenderer implements IRenderer {
+import {IRenderer} from "./renderer";
+import {Flock} from "./flock";
+import {Vector} from "./vector";
+import {Boid} from "./boid";
+
+export class CanvasRenderer implements IRenderer {
 
     readonly $canvas: HTMLCanvasElement;
     readonly symbol: Vector[];
@@ -22,7 +27,7 @@ class CanvasRenderer implements IRenderer {
 
         let absolutePoints: Vector[] = [];
 
-        for(let point of this.symbol){
+        for (let point of this.symbol) {
             absolutePoints.push(point.rotate(boid.orientation).add(boid.location));
         }
 
@@ -35,10 +40,11 @@ class CanvasRenderer implements IRenderer {
         this.ctx.stroke();
         this.ctx.closePath();
     }
+
     draw(flock: Flock) {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.width, this.height);
-        for(let boid of flock.boids) {
+        for (let boid of flock.boids) {
             this.drawBoid(boid);
         }
         this.ctx.fillStyle = "green";
@@ -46,6 +52,7 @@ class CanvasRenderer implements IRenderer {
         this.ctx.fillStyle = "grey";
         this.ctx.fillText("press tab to toggle", 5, 25);
     }
+
     clear() {
         this.$canvas.remove();
     }
