@@ -1,4 +1,4 @@
-import {getRenderer} from "./modules/renderer";
+import {getRenderer, IRenderer} from "./modules/renderer";
 import {Flock} from "./modules/flock";
 import {Vector} from "./modules/vector";
 import {SvgRenderer} from "./modules/svgRenderer";
@@ -8,28 +8,51 @@ const config = {
     width: window.innerWidth,
     height: window.innerHeight,
     count: 300,
-    framerate: 60
+    framerate: 70
 };
+
+function getParameterByName(name: string) {
+    let url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
 
 let running: boolean = true;
 
-const flock = new Flock(config.width, config.height, config.count);
+let countParameter = parseInt(getParameterByName("count"));
+let count = isNaN(countParameter) ? config.count : countParameter;
+
+
+const flock = new Flock(config.width, config.height, count);
 
 const boidPoints = [new Vector(-5, -5), new Vector(5, 0), new Vector(-5, 5)];
 
-let renderer = getRenderer(SvgRenderer, flock, boidPoints);
+let renderer : IRenderer;
 
+if(getParameterByName("renderer") == "canvas") {
+    renderer = getRenderer(CanvasRenderer, flock, boidPoints);
+}else{
+    renderer = getRenderer(SvgRenderer, flock, boidPoints);
+}
 
-function changeRenderer(data: KeyboardEvent) {
+function changeRenderer() {
+    renderer.clear();
+    if (renderer instanceof CanvasRenderer) {
+        renderer = getRenderer(SvgRenderer, flock, boidPoints);
+    } else if (renderer instanceof SvgRenderer) {
+        renderer = getRenderer(CanvasRenderer, flock, boidPoints);
+    }
+}
+
+function handleKeypress(data: KeyboardEvent) {
 
     switch (data.code) {
         case "Tab" :
-            renderer.clear();
-            if (renderer instanceof CanvasRenderer) {
-                renderer = getRenderer(SvgRenderer, flock, boidPoints);
-            } else if (renderer instanceof SvgRenderer) {
-                renderer = getRenderer(CanvasRenderer, flock, boidPoints);
-            }
+            changeRenderer();
             data.preventDefault();
             break;
 
@@ -53,4 +76,4 @@ function animate() {
 
 let animation = setInterval(animate, 1000 / config.framerate);
 
-document.addEventListener("keydown", changeRenderer);
+document.addEventListener("keydown", handleKeypress);
